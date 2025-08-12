@@ -1,0 +1,30 @@
+{
+  "name": "tradeion_auth_service",
+  "version": "1.0.0",
+  "description": "Auth service to handle authentication of the user for crypto trading application",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@fastify/helmet": "^13.0.1",
+    "@fastify/jwt": "^9.1.0",
+    "@fastify/rate-limit": "^10.3.0",
+    "dotenv": "^17.2.1",
+    "fastify": "^5.4.0",
+    "install": "^0.13.0",
+    "npm": "^11.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.0",
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
+  }
+}
