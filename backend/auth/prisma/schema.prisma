@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderSide {
+  BUY
+  SELL
+}
+
+enum OrderType {
+  MARKET
+  LIMIT
+}
+
+model OtpVerification {
+  id Int @id @default(autoincrement())
+
+  email String @unique
+  otp String?
+  otpExpiresAt DateTime?
+  isEmailVerified Boolean @default(false)
+  user UserDetails? @relation(fields: [userId], references: [id])
+  userId Int? @unique
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  deletedAt           DateTime?
+}
+
+model UserDetails {
+  id Int @id @default(autoincrement())
+
+  userId String @unique
+  name String
+  email String @unique
+  password String
+  phoneNumber String? @unique
+
+  role String @default("USER")
+  status String @default("ACTIVE")
+
+  lastLoginAt DateTime?
+  failedLoginAttempts Int @default(0)
+
+  lockUntil DateTime?
+  lastFailedLoginAt DateTime?
+
+  account Account?
+  otpVerification OtpVerification?
+
+  refreshTokens RefreshToken[]
+
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  deletedAt           DateTime?
+}
+
+model RefreshToken {
+  id Int @id @default(autoincrement())
+  token String @unique
+  user UserDetails @relation(fields: [userId], references: [id])
+  userId Int
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model Account {
+
+  id Int @id @default(autoincrement())
+
+  user           UserDetails @relation(fields: [userId], references: [id])
+  userId         Int       @unique
+
+  accountBalance Decimal @default(50000.00)
+  trades Trade[]
+
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  deletedAt           DateTime?
+
+}
+
+model Trade {
+
+  id Int @id @default(autoincrement())
+
+  account    Account   @relation(fields: [accountId], references: [id])
+  accountId  Int
+
+  transactionType OrderSide 
+  quantity Decimal
+  symbol String
+  orderType OrderType 
+  price Decimal
+  profitLoss Decimal?
+  
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  deletedAt           DateTime?
+
+}
