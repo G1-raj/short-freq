@@ -8,6 +8,7 @@ import loginLimitter from "../middlewares/login_limmiter.js";
 import refreshToken from "../controllers/auth/refresh_token.js";
 import verify_user from "../middlewares/verify_user.js";
 import logout, { LogoutBody } from "../controllers/auth/logout/logout.js";
+import user from "../controllers/user.js";
 
 const standartRateLimit = {
     config: {
@@ -32,6 +33,8 @@ const authRoutes = async (fastify: FastifyInstance) => {
     fastify.post('/refresh', refreshToken);
 
     fastify.post< { Body: LogoutBody} >('/logout', { ...standartRateLimit, preHandler: verify_user}, logout);
+
+    fastify.get('/me', { ...standartRateLimit, preHandler: verify_user }, user);
 }
 
 export default authRoutes;
